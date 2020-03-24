@@ -1,9 +1,7 @@
 package ru.job4j.design.srp;
 
 import ru.job4j.design.srp.model.Employer;
-import ru.job4j.design.srp.presenters.HtmlEmployerPresenter;
-import ru.job4j.design.srp.presenters.Presenter;
-import ru.job4j.design.srp.presenters.SimpleEmployerPresenter;
+import ru.job4j.design.srp.presenters.*;
 
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -97,6 +95,52 @@ public class RequestPatterns {
         Comparator<Employer> comparator = Comparator.comparingDouble(Employer::getSalary);
         Map<String, String> fieldsSet = new LinkedHashMap<>();
         fieldsSet.put("Name", "%s");
+        fieldsSet.put("Salary", "%s");
+        return new Request<>(
+                presenter,
+                predicate,
+                comparator,
+                fieldsSet
+        );
+    }
+
+    /**
+     * Generate pattern from all XML
+     * type - employer
+     *
+     * @return pattern
+     */
+    public static Request<Employer> employerXMLReport() {
+        Presenter presenter = new XMLEmployerPresenter();
+        Predicate<Employer> predicate = (em -> true);
+        Comparator<Employer> comparator = (e1, e2) -> 0;
+        Map<String, String> fieldsSet = new LinkedHashMap<>();
+        fieldsSet.put("Name", "%s");
+        fieldsSet.put("Hired", "%s");
+        fieldsSet.put("Fired", "%s");
+        fieldsSet.put("Salary", "%s");
+        return new Request<>(
+                presenter,
+                predicate,
+                comparator,
+                fieldsSet
+        );
+    }
+
+    /**
+     * Generate pattern from all JSON
+     * type - employer
+     *
+     * @return pattern
+     */
+    public static Request<Employer> employerJSONReport() {
+        Presenter presenter = new JSONEmployerPresenter();
+        Predicate<Employer> predicate = (em -> true);
+        Comparator<Employer> comparator = (e1, e2) -> 0;
+        Map<String, String> fieldsSet = new LinkedHashMap<>();
+        fieldsSet.put("Name", "%s");
+        fieldsSet.put("Hired", "%s");
+        fieldsSet.put("Fired", "%s");
         fieldsSet.put("Salary", "%s");
         return new Request<>(
                 presenter,

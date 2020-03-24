@@ -126,6 +126,47 @@ public class ReportEngineTest {
         assertThat(engine.generate(request), is(expect.toString()));
     }
 
+    @Test
+    public void whenXMLReport() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        StringJoiner expect = new StringJoiner(System.lineSeparator());
+        expect.add("<?xml version=\"1.0\" encoding=\"ISO8859-1\" ?>")
+                .add("<report>")
+                .add("\t<header>Employer report</header>");
+        for (int i = 0; i < 3; i++) {
+            expect.add("<\tnode>")
+                    .add(String.format("\t\t<p>%s : %s<p>", "Name", workers[i].getName()))
+                    .add(String.format("\t\t<p>%s : %s<p>", "Hired", workers[i].getHired()))
+                    .add(String.format("\t\t<p>%s : %s<p>", "Fired", workers[i].getFired()))
+                    .add(String.format("\t\t<p>%s : %s<p>", "Salary", workers[i].getSalary()))
+                    .add("<\t/node>");
+        }
+        expect.add("</report>");
+        Request<Employer> request = RequestPatterns.employerXMLReport();
+        ReportEngine engine = new ReportEngine(store);
+        assertThat(engine.generate(request), is(expect.toString()));
+    }
+
+    @Test
+    public void whenJSONReport() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        StringJoiner expect = new StringJoiner(System.lineSeparator());
+        expect.add("{")
+                .add("\t\"report\": {")
+                .add("\t\t\"title\": \"Employer report\"");
+        for (int i = 0; i < 3; i++) {
+            expect.add("\t\t\"node\": {")
+                    .add(String.format("\t\t\t\"%s\": \"%s\"", "Name", workers[i].getName()))
+                    .add(String.format("\t\t\t\"%s\": \"%s\"", "Hired", workers[i].getHired()))
+                    .add(String.format("\t\t\t\"%s\": \"%s\"", "Fired", workers[i].getFired()))
+                    .add(String.format("\t\t\t\"%s\": \"%s\"", "Salary", workers[i].getSalary()))
+                    .add("\t\t}");
+        }
+        expect.add("\t}")
+                .add("}");
+        Request<Employer> request = RequestPatterns.employerJSONReport();
+        ReportEngine engine = new ReportEngine(store);
+        assertThat(engine.generate(request), is(expect.toString()));
+    }
+
     @Test(expected = NoSuchMethodException.class)
     public void whenInvalidRequest() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         StringJoiner expect = new StringJoiner("");

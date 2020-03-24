@@ -8,9 +8,9 @@ import java.util.Map;
 import java.util.StringJoiner;
 
 /**
- * Simple string template for employer report.
+ * JSON template for employer report.
  */
-public class SimpleEmployerPresenter implements Presenter {
+public class JSONEmployerPresenter implements Presenter {
     /**
      * @param data - employers for present
      * @param fieldsSet - fields and fields format
@@ -22,19 +22,21 @@ public class SimpleEmployerPresenter implements Presenter {
     @Override
     public String execute(List<Employer> data, Map<String, String> fieldsSet) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         StringJoiner rsl = new StringJoiner(System.lineSeparator());
+        rsl.add("{")
+                .add("\t\"report\": {")
+                .add("\t\t\"title\": \"Employer report\"");
         for (Employer employer : data) {
-            StringJoiner header = new StringJoiner("; ");
-            StringJoiner body = new StringJoiner(";");
+            rsl.add("\t\t\"node\": {");
             for (Map.Entry<String, String> fieldSet : fieldsSet.entrySet()) {
-                header.add(fieldSet.getKey());
                 String methodName = "get" + fieldSet.getKey();
                 String formatString = fieldSet.getValue();
                 String fieldString = String.format(formatString, Employer.class.getMethod(methodName).invoke(employer));
-                body.add(fieldString);
+                rsl.add(String.format("\t\t\t\"%s\": \"%s\"", fieldSet.getKey(), fieldString));
             }
-            rsl.add(header.toString());
-            rsl.add(body.toString());
+            rsl.add("\t\t}");
         }
+        rsl.add("\t}")
+                .add("}");
         return rsl.toString();
     }
 }

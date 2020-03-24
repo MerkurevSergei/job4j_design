@@ -7,8 +7,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
 
+/**
+ * Html template for employer report.
+ */
 public class HtmlEmployerPresenter implements Presenter {
-
+    /**
+     * @param data - employers for present
+     * @param fieldsSet - fields and fields format
+     * @return String - report
+     * @throws NoSuchMethodException - exception
+     * @throws InvocationTargetException - exception
+     * @throws IllegalAccessException - exception
+     */
     @Override
     public String execute(List<Employer> data, Map<String, String> fieldsSet) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         StringJoiner rsl = new StringJoiner(System.lineSeparator());

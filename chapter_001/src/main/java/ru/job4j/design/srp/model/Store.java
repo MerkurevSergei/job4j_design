@@ -4,6 +4,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 
+/**
+ *
+ */
 public interface Store {
     void add(Employer employer);
     List<Employer> findBy(Predicate<Employer> filter);
