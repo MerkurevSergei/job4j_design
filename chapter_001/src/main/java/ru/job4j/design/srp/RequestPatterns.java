@@ -92,7 +92,7 @@ public class RequestPatterns {
     public static Request<Employer> employerSimpleReportForHR() {
         Presenter presenter = new SimpleEmployerPresenter();
         Predicate<Employer> predicate = (em -> true);
-        Comparator<Employer> comparator = Comparator.comparingDouble(Employer::getSalary);
+        Comparator<Employer> comparator = Comparator.comparingDouble(Employer::getSalary).reversed();
         Map<String, String> fieldsSet = new LinkedHashMap<>();
         fieldsSet.put("Name", "%s");
         fieldsSet.put("Salary", "%s");

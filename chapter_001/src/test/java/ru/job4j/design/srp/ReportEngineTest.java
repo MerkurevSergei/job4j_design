@@ -111,7 +111,7 @@ public class ReportEngineTest {
     @Test
     public void whenSimpleReportForHRSorted() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         StringJoiner expect = new StringJoiner("");
-        Arrays.sort(workers, Comparator.comparingDouble(Employer::getSalary));
+        Arrays.sort(workers, Comparator.comparingDouble(Employer::getSalary).reversed());
         for (int i = 0; i < 3; i++) {
             expect.add("Name; Salary")
                     .add(System.lineSeparator())
