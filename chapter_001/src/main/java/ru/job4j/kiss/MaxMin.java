@@ -29,7 +29,7 @@ public class MaxMin {
      * @return - max element from list
      */
     public <T> T min(List<T> value, Comparator<T> comparator) {
-        return search(value, comparator);
+        return search(value, comparator.reversed());
     }
 
     /**
