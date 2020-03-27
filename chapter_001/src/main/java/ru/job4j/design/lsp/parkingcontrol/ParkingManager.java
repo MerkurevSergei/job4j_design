@@ -4,6 +4,11 @@ import java.util.List;
 
 public class ParkingManager {
     List<Parking> parkings;
+
+    public ParkingManager(List<Parking> parkings) {
+        this.parkings = parkings;
+    }
+
     public void execute(List<Vehicle> vehicles) {
 
     }
