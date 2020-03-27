@@ -29,7 +29,7 @@ public class ParkingManagerTest {
     }
 
     @Test
-    public void executeSuccess() {
+    public void executeSuccess() throws Exception {
         ParkingTrack expectedParkingTrack = new ParkingTrack(10);
         expectedParkingTrack.add(vehicles.get(0));
         ParkingCar expectedParkingCar = new ParkingCar(10);
@@ -51,7 +51,7 @@ public class ParkingManagerTest {
     }
 
     @Test(expected = Exception.class)
-    public void executeFailed() {
+    public void executeFailed() throws Exception {
         vehicles.add(new Car());
 
         ParkingTrack expectedParkingTrack = new ParkingTrack(10);
