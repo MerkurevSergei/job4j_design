@@ -29,7 +29,7 @@ public class MatrixToFile {
      * Write String matrixString to file.
      */
     public void write() {
-        try (FileOutputStream out = new FileOutputStream("C:\\temp\\ExampleMatrix.txt")) {
+        try (FileOutputStream out = new FileOutputStream("exampleMatrix.txt")) {
             out.write(matrixString.getBytes());
         } catch (IOException e) {
             e.printStackTrace();

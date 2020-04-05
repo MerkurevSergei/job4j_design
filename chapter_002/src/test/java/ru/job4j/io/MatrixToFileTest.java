@@ -24,7 +24,7 @@ public class MatrixToFileTest {
         MatrixToFile matrixToFile = new MatrixToFile();
         matrixToFile.write();
         StringBuilder out = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new FileReader("C:\\temp\\ExampleMatrix.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("exampleMatrix.txt"))) {
             while (reader.ready()) {
                 out.append(reader.readLine()).append(System.lineSeparator());
             }
