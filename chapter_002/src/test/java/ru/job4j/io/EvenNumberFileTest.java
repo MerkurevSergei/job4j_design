@@ -16,7 +16,7 @@ public class EvenNumberFileTest {
         expected.add(new EvenNumberFile.Pair(1, false));
         expected.add(new EvenNumberFile.Pair(5, false));
         expected.add(new EvenNumberFile.Pair(18, true));
-        List<EvenNumberFile.Pair> out = new EvenNumberFile().execute();
+        List<EvenNumberFile.Pair> out = new EvenNumberFile("src/main/resources/even.txt").execute();
         assertThat(expected, is(out));
     }
 }

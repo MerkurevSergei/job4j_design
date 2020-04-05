@@ -21,10 +21,8 @@ public class MatrixToFileTest {
                 + "8 16 24 32 40 48 56 64 72 " + System.lineSeparator()
                 + "9 18 27 36 45 54 63 72 81 " + System.lineSeparator();
 
-        MatrixToFile matrixToFile = new MatrixToFile();
-        matrixToFile.write();
         StringBuilder out = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new FileReader("exampleMatrix.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/test/resources/exampleMatrix.txt"))) {
             while (reader.ready()) {
                 out.append(reader.readLine()).append(System.lineSeparator());
             }

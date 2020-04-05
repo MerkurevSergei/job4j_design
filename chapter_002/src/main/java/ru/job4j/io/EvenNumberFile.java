@@ -17,6 +17,17 @@ public class EvenNumberFile {
     List<Pair> result = new ArrayList<>();
 
     /**
+     * @param path - path to file
+     */
+    public EvenNumberFile(String path) {
+        this.path = path;
+    }
+
+    /**
+     * path to file
+     */
+    String path;
+    /**
      * @return pairs
      */
     public List<Pair> execute() {
@@ -34,7 +45,7 @@ public class EvenNumberFile {
      */
     private String[] read() {
         String[] strings = new String[0];
-        try (InputStream in = new FileInputStream("even.txt")) {
+        try (InputStream in = new FileInputStream(path)) {
             StringBuilder stringBuilder = new StringBuilder();
             int read;
             while ((read = in.read()) != -1) {
@@ -90,7 +101,7 @@ public class EvenNumberFile {
      * @param args - command line args
      */
     public static void main(String[] args) {
-        EvenNumberFile evenNumberFile = new EvenNumberFile();
+        EvenNumberFile evenNumberFile = new EvenNumberFile("chapter_002/src/main/resources/even.txt");
         List<Pair> pairs = evenNumberFile.execute();
         for (Pair pair : pairs) {
             System.out.println(pair.getNumber() + " : " + (pair.isEven() ? "even" : "odd"));
