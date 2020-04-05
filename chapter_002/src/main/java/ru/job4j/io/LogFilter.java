@@ -23,10 +23,25 @@ public class LogFilter {
     }
 
     /**
+     * @param log - log messages
+     * @param file - output file
+     */
+    public static void save(List<String> log, String file) {
+        try (final PrintWriter printWriter = new PrintWriter(file)) {
+            for (String message : log) {
+                printWriter.write(message);
+                printWriter.write(System.lineSeparator());
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * @param args - console arguments
      */
     public static void main(String[] args) {
         List<String> log = filter("chapter_002/src/main/resources/log.txt");
-        System.out.println(log);
+        save(log, "chapter_002/src/main/resources/404.txt");
     }
 }
