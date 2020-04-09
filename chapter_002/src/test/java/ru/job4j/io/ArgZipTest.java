@@ -1,5 +1,7 @@
 package ru.job4j.io;
 
+import org.junit.Assume;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -11,6 +13,7 @@ import java.nio.file.InvalidPathException;
 import static org.junit.Assert.*;
 
 public class ArgZipTest {
+    final boolean isWindows = System.getProperty("os.name").toLowerCase().contains("windows");
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
@@ -61,10 +64,11 @@ public class ArgZipTest {
 
     @Test(expected = InvalidPathException.class)
     public void whenInvalidPathDirectory() throws IOException {
+        Assume.assumeTrue(isWindows);
         folder.newFile("temp.txt");
         String[] strings = new String[2];
         strings[0] = "-d";
-        strings[1] = "\\NotExistDirectory" + folder.getRoot().toString();
+        strings[1] = " /\\?<>*,\\|NotExistDirectory" + folder.getRoot().toString();
         assertTrue(new ArgZip(strings).directory().isEmpty());
     }
 
@@ -106,10 +110,11 @@ public class ArgZipTest {
 
     @Test(expected = InvalidPathException.class)
     public void whenInvalidPathOutput() throws IOException {
+        Assume.assumeTrue(isWindows);
         folder.newFile("temp.txt");
         String[] strings = new String[2];
         strings[0] = "-o";
-        strings[1] = "\\NotExistDirectory" + folder.newFile("temp.zip").getAbsolutePath();
+        strings[1] = "/\\?<>*,\\|NotExistDirectory" + folder.newFile("temp.zip").getAbsolutePath();
         assertTrue(new ArgZip(strings).output().isEmpty());
     }
 
