@@ -10,20 +10,35 @@ import java.util.StringJoiner;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+/**
+ * Config manager.
+ */
 public class Config {
+    /**
+     * path to config file
+     */
     private final String path;
+    /**
+     * values
+     */
     private final Map<String, String> values = new HashMap<>();
 
+    /**
+     * @param path - path to config file
+     */
     public Config(final String path) {
         this.path = path;
     }
 
+    /**
+     * load parameters from config file
+     */
     public void load() {
         try (final BufferedReader reader = new BufferedReader(new FileReader(this.path))) {
             values.putAll(
                     reader
                             .lines()
-                            .filter(s -> s.split("=").length >= 2)
+                            .filter(s -> !s.startsWith("#") && s.split("=").length >= 2)
                             .map((s -> s.split("=")))
                             .collect(Collectors.toMap(strings -> strings[0], strings -> strings[1]))
             );
@@ -32,10 +47,24 @@ public class Config {
         }
     }
 
+    /**
+     * @param key - parameter key
+     * @return - parameter
+     */
     public String value(String key) {
         return values.getOrDefault(key, "");
     }
 
+    /**
+     * @return all parameters
+     */
+    public Map<String, String> getValues() {
+        return values;
+    }
+
+    /**
+     * @return string
+     */
     @Override
     public String toString() {
         StringJoiner out = new StringJoiner(System.lineSeparator());
@@ -47,6 +76,9 @@ public class Config {
         return out.toString();
     }
 
+    /**
+     * @param args - command line arguments
+     */
     public static void main(String[] args) {
         System.out.println(new Config("chapter_002/src/main/resources/app.properties"));
     }
