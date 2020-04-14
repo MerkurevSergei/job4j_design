@@ -3,6 +3,7 @@ package ru.job4j.io;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 /**
  * Log filter frim file
@@ -35,6 +36,16 @@ public class LogFilter {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    public static String read(String file) {
+        StringJoiner out = new StringJoiner(System.lineSeparator());
+        try (final BufferedReader reader = new BufferedReader(new FileReader("src/test/resources/404.txt"))) {
+            reader.lines().forEach(out::add);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return out.toString();
     }
 
     /**

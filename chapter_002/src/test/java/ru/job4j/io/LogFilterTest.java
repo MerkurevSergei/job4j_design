@@ -24,7 +24,7 @@ public class LogFilterTest {
     }
 
     @Test
-    public void save() {
+    public void whenSaveAndReadSuccess() {
         String expected = "0:0:0:0:0:0:0:1 - - [19/Feb/2020:15:21:18 +0300] \"GET /items/ajax.html HTTP/1.1\""
                 + " 404 1113" + System.lineSeparator()
                 + "0:0:0:0:0:0:0:1 - - [19/Feb/2020:15:21:23 +0300] \"GET /TrackStudio/ HTTP/1.1\""
@@ -33,12 +33,7 @@ public class LogFilterTest {
 
         List<String> log = LogFilter.filter("src/test/resources/log.txt");
         LogFilter.save(log, "src/test/resources/404.txt");
-        StringJoiner out = new StringJoiner(System.lineSeparator());
-        try (final BufferedReader reader = new BufferedReader(new FileReader("src/test/resources/404.txt"))) {
-            reader.lines().forEach(out::add);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        assertThat(expected, is(out.toString()));
+        String out = LogFilter.read("src/test/resources/404.txt");
+        assertThat(expected, is(out));
     }
 }
