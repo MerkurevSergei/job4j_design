@@ -1,7 +1,6 @@
 package ru.job4j.generic;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 /**
  * Simple wrapper over generic array.
@@ -45,7 +44,7 @@ public class SimpleArray<E> {
      * @param index - index of replacement element
      * @param model - replacement element
      */
-    public void set(int index, E model) {
+    public void set(int index, E model) throws ArrayIndexOutOfBoundsException {
         if (index > size() - 1) {
             throw new ArrayIndexOutOfBoundsException("invalid index");
         }
@@ -57,7 +56,7 @@ public class SimpleArray<E> {
      *
      * @param index - remove index element
      */
-    public void remove(int index) {
+    public void remove(int index) throws ArrayIndexOutOfBoundsException {
         if (index > size() - 1) {
             throw new ArrayIndexOutOfBoundsException("invalid index");
         }
@@ -87,6 +86,30 @@ public class SimpleArray<E> {
     }
 
     /**
+     * @param model - searching element
+     * @return - index of searching element
+     */
+    public int indexOf(E model) {
+        int res = -1;
+        if (model == null) {
+            for (int i = 0; i < size(); i++) {
+                if (array[i] == null) {
+                    res = i;
+                    break;
+                }
+            }
+        } else {
+            for (int i = 0; i < size(); i++) {
+                if (model.equals(array[i])) {
+                    res = i;
+                    break;
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
      * @return max available size
      */
     private int maxSize() {
@@ -109,7 +132,7 @@ public class SimpleArray<E> {
         /**
          * current index
          */
-        int index;
+        private int index;
 
         /**
          * constructor
