@@ -10,12 +10,14 @@ public class EvenNumbersIterator implements Iterator<Integer> {
     /**
      * iterable array
      */
-    final int[] array;
+    final private int[] array;
 
     /**
      * next index
      */
-    int i;
+    private int i;
+
+    private int nextIndex;
 
     /**
      * @param array init iterable array
