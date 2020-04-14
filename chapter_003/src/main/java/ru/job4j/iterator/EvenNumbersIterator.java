@@ -13,10 +13,13 @@ public class EvenNumbersIterator implements Iterator<Integer> {
     final private int[] array;
 
     /**
-     * next index
+     * current index
      */
     private int i;
 
+    /**
+     * next index
+     */
     private int nextIndex;
 
     /**
@@ -32,7 +35,14 @@ public class EvenNumbersIterator implements Iterator<Integer> {
      */
     @Override
     public boolean hasNext() {
-        return nextIndex() < array.length;
+        nextIndex = i + 1;
+        while (array[nextIndex] % 2 != 0) {
+            nextIndex++;
+            if (nextIndex == array.length) {
+                break;
+            }
+        }
+        return nextIndex < array.length;
     }
 
     /**
@@ -43,21 +53,7 @@ public class EvenNumbersIterator implements Iterator<Integer> {
         if (!hasNext()) {
             throw new NoSuchElementException("No such");
         }
-        i = nextIndex();
+        i = nextIndex;
         return array[i];
-    }
-
-    /**
-     * @return get index of the next even element
-     */
-    public int nextIndex() {
-        int j = i + 1;
-        while (array[j] % 2 != 0) {
-            j++;
-            if (j == array.length) {
-                break;
-            }
-        }
-        return j;
     }
 }
