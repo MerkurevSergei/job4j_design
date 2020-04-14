@@ -39,8 +39,8 @@ public class Config {
                     reader
                             .lines()
                             .filter(s -> !s.startsWith("#") && s.split("=").length >= 2)
-                            .map((s -> s.split("=")))
-                            .collect(Collectors.toMap(strings -> strings[0], strings -> strings[1]))
+                            .collect(Collectors.toMap(
+                                    s -> s.split("=")[0], s -> s.split("=")[1]))
             );
         } catch (IOException e) {
             e.printStackTrace();
