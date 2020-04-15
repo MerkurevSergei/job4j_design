@@ -49,13 +49,7 @@ public class SimpleArray<T> implements Iterable<T> {
      */
     @SuppressWarnings("unchecked")
     public T get(int index) {
-        try {
-            Objects.checkIndex(index, size);
-        } catch (IndexOutOfBoundsException ex) {
-            final NoSuchElementException e = new NoSuchElementException();
-            e.addSuppressed(ex);
-            throw e;
-        }
+        Objects.checkIndex(index, size);
         return (T) container[index];
     }
 

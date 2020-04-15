@@ -28,13 +28,13 @@ public class SimpleArrayTest {
         assertThat(rsl, is("first"));
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test(expected = IndexOutOfBoundsException.class)
     public void whenGetEmpty() {
         SimpleArray<String> array = new SimpleArray<>();
         array.get(0);
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test(expected = IndexOutOfBoundsException.class)
     public void whenGetOutBound() {
         SimpleArray<String> array = new SimpleArray<>();
         array.add("first");
