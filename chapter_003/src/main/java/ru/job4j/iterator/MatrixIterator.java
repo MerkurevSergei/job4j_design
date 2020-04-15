@@ -7,9 +7,27 @@ import java.util.NoSuchElementException;
  * Iterator from jagged array
  */
 public class MatrixIterator implements Iterator<Integer> {
-    final int[][] array;
-    int i;
-    int j;
+    /**
+     * store of the matrix
+     */
+    private final int[][] array;
+    /**
+     * current column
+     */
+    private int i;
+    /**
+     * current row
+     */
+    private int j;
+    /**
+     * next column
+     */
+    private int nextI;
+    /**
+     * next row
+     */
+    private int nextJ;
+
 
     /**
      * @param array - iterable array
@@ -25,7 +43,14 @@ public class MatrixIterator implements Iterator<Integer> {
      */
     @Override
     public boolean hasNext() {
-        return j < array.length - 1;
+        nextI = i;
+        nextJ = j;
+        nextI++;
+        if (nextI == array[nextJ].length) {
+            nextI = 0;
+            nextJ++;
+        }
+        return nextJ < array.length;
     }
 
     /**
@@ -33,14 +58,10 @@ public class MatrixIterator implements Iterator<Integer> {
      */
     @Override
     public Integer next() {
-        i++;
-        if (i == array[j].length) {
-            i = 0;
-            j++;
-        }
-        if (j > array.length) {
+        if (!hasNext()) {
             throw new NoSuchElementException("No such");
         }
+        i = nextI; j = nextJ;
         return array[j][i];
     }
 }
