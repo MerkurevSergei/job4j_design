@@ -4,10 +4,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -49,12 +46,23 @@ public class SearchTest {
         assertThat(expected, is(outList.toString()));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void whenSearchArgsIllegalArgumentException() throws IOException {
+    @Test(expected = FileNotFoundException.class)
+    public void whenThrowFileNotFoundException() throws IOException {
         final File file = folder.newFile("two.java");
         folder.newFile("one.txt");
 
         String[] args = new String[]{file.toString(), "java"};
+        final List<String> outList = Search.search(args);
+        outList.sort(String::compareTo);
+        assertThat("", is(outList.toString()));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void whenThrowIllegalArgumentException() throws IOException {
+        final File file = folder.newFile("two.java");
+        folder.newFile("one.txt");
+
+        String[] args = new String[]{file.toString()};
         final List<String> outList = Search.search(args);
         outList.sort(String::compareTo);
         assertThat("", is(outList.toString()));

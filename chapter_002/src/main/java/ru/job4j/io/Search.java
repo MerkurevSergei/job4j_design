@@ -1,7 +1,9 @@
 package ru.job4j.io;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NotDirectoryException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -10,7 +12,7 @@ import java.util.List;
 /**
  * Search example
  */
-public class Search {
+public final class Search {
 
     /**
      * @param args - command line arguments
@@ -42,11 +44,26 @@ public class Search {
      * @throws IOException - exception
      */
     public static List<String> search(String[] args) throws IOException {
-        if (args.length < 2 || !Paths.get(args[0]).toFile().exists() || Paths.get(args[0]).toFile().isFile()) {
-            throw new IllegalArgumentException("Command line arguments is not valid");
-        }
+        checkArgs(args);
         final ListFileVisitor listFileVisitor = new ListFileVisitor(new ArrayList<>(), args[1]);
         Files.walkFileTree(Paths.get(args[0]), listFileVisitor);
         return listFileVisitor.getList();
+    }
+
+    /**
+     * @param args command line arguments
+     */
+    public static void checkArgs(String[] args) throws NotDirectoryException, FileNotFoundException {
+
+        if (args.length < 2) {
+            throw new IllegalArgumentException("Command line arguments is not valid");
+        }
+        if (!Paths.get(args[0]).toFile().exists()) {
+            throw new NotDirectoryException("File not found");
+        }
+        if (Paths.get(args[0]).toFile().isFile()) {
+            throw new FileNotFoundException();
+        }
+
     }
 }
