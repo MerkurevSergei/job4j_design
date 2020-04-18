@@ -1,6 +1,7 @@
 package ru.job4j.io.chat;
 
 import java.io.*;
+import java.util.Objects;
 
 /**
  * Chat with bot.
@@ -41,11 +42,13 @@ public class Chat {
         println(helloMsg);
         logger.write(helloMsg);
         String message = getUserMessage();
-        while (checkMessage(message)) {
+        while (checkStop(message)) {
             String answer = bot.answer(message);
-            println(answer);
-            logger.write(message);
-            logger.write(answer);
+            if (answer != null) {
+                println(answer);
+                logger.write(message);
+                logger.write(answer);
+            }
             message = getUserMessage();
         }
         logger.close();
@@ -71,7 +74,7 @@ public class Chat {
      * @param message - check exit command
      * @return - false - end work chat
      */
-    private boolean checkMessage(String message) {
+    private boolean checkStop(String message) {
         return !message.toLowerCase().equals("закончить");
     }
 

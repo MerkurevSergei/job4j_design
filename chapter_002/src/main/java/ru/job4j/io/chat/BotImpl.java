@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Supplier;
 
 /**
  * Chat bot implementation.
@@ -17,6 +18,9 @@ public class BotImpl implements Bot {
      */
     final List<String> answers;
 
+    AnswerStrategy[] strategies;
+
+    AnswerStrategy currentStrategy;
     /**
      * @param pathBase - path to knowledge base from bot answers
      */
@@ -27,6 +31,8 @@ public class BotImpl implements Bot {
         } catch (NullPointerException | IOException ignored) {
         }
         answers = answers1;
+        strategies = new AnswerStrategy[] {new RandomAnswer(), new SilenceAnswer()};
+        currentStrategy = strategies[0];
     }
 
     /**
@@ -35,12 +41,13 @@ public class BotImpl implements Bot {
      */
     @Override
     public String answer(String question) {
-        String answer = "Knowledge base don't loaded";
-        if (baseLoad()) {
-            final int i = new Random().nextInt(answers.size());
-            answer = answers.get(i);
+        for (AnswerStrategy s : strategies) {
+            if (s.check(question)) {
+                currentStrategy = s;
+                break;
+            }
         }
-        return answer;
+        return currentStrategy.answer(question);
     }
 
     /**
@@ -49,4 +56,44 @@ public class BotImpl implements Bot {
     private boolean baseLoad() {
         return !(answers.size() == 0);
     }
+
+    /**
+     * Interface from bot answer strategy
+     */
+    private interface AnswerStrategy {
+        boolean check(String question);
+        String answer(String question);
+    }
+
+    private class SilenceAnswer implements AnswerStrategy {
+
+        @Override
+        public boolean check(String question) {
+            return question.toLowerCase().equals("стоп");
+        }
+
+        @Override
+        public String answer(String question) {
+            return null;
+        }
+    }
+
+    private class RandomAnswer implements AnswerStrategy {
+
+        @Override
+        public boolean check(String question) {
+            return question.toLowerCase().equals("продолжить");
+        }
+
+        @Override
+        public String answer(String question) {
+            String answer = "Knowledge base don't loaded";
+            if (baseLoad()) {
+                final int i = new Random().nextInt(answers.size());
+                answer = answers.get(i);
+            }
+            return answer;
+        }
+    }
+
 }
