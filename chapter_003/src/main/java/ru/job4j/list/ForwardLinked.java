@@ -1,5 +1,6 @@
 package ru.job4j.list;
 
+import java.io.PrintWriter;
 import java.util.*;
 
 /**
@@ -29,18 +30,19 @@ public final class ForwardLinked<T> implements Iterable<T> {
      * @param value - value to be stored
      */
     public final void add(T value) {
-        Node<T> node = new Node<>(value, null);
+        Node<T> newNode = new Node<>(value, null, null);
         if (head == null) {
-            head = node;
+            head = newNode;
         } else {
-            tail.next = node;
+            newNode.prev = tail;
+            tail.next = newNode;
         }
-        tail = node;
+        tail = newNode;
         modCount++;
     }
 
     /**
-     * deleted first element
+     * deleted first item
      *
      * @return deleted item
      * @throws NoSuchElementException exception
@@ -49,10 +51,38 @@ public final class ForwardLinked<T> implements Iterable<T> {
         if (head == null) {
             throw new NoSuchElementException("No such");
         }
-        Node<T> deleted = head;
-        head = head.next;
+        T deleted = head.value;
+        if (head == tail) {
+            head = null;
+            tail = null;
+        } else {
+            head = head.next;
+            head.prev = null;
+        }
         modCount++;
-        return deleted.value;
+        return deleted;
+    }
+
+    /**
+     * deleted last item
+     *
+     * @return deleted item
+     * @throws NoSuchElementException exception
+     */
+    public final T deleteLast() throws NoSuchElementException {
+        if (tail == null) {
+            throw new NoSuchElementException("No such");
+        }
+        T  deleted = tail.value;
+        if (head == tail) {
+            head = null;
+            tail = null;
+        } else {
+            tail = tail.prev;
+            tail.next = null;
+        }
+        modCount++;
+        return deleted;
     }
 
     /**
@@ -108,12 +138,19 @@ public final class ForwardLinked<T> implements Iterable<T> {
         Node<T> next;
 
         /**
+         * prev node
+         */
+        Node<T> prev;
+
+        /**
          * @param value - init value
          * @param next  - next node
+         * @param prev  - prev node
          */
-        public Node(T value, Node<T> next) {
+        public Node(T value, Node<T> next, Node<T> prev) {
             this.value = value;
             this.next = next;
+            this.prev = prev;
         }
     }
 }
