@@ -73,7 +73,7 @@ public final class ForwardLinked<T> implements Iterable<T> {
         if (tail == null) {
             throw new NoSuchElementException("No such");
         }
-        T  deleted = tail.value;
+        T deleted = tail.value;
         if (head == tail) {
             head = null;
             tail = null;
@@ -83,6 +83,21 @@ public final class ForwardLinked<T> implements Iterable<T> {
         }
         modCount++;
         return deleted;
+    }
+
+    /**
+     * revert forward linked list
+     */
+    public void revert() {
+        Node<T> tmpHead = head;
+        while (head != null) {
+            Node<T> tmp = head;
+            head = head.next;
+            tmp.next = tmp.prev;
+            tmp.prev = head;
+        }
+        head = tail;
+        tail = tmpHead;
     }
 
     /**
