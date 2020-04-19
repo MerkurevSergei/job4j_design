@@ -16,7 +16,7 @@ public class JaggedArrayIteratorTest {
 
     @Before
     public void setUp() {
-        it = new MatrixIterator(new int[][]{{1}, {3, 4}, {7}});
+        it = new MatrixIterator(new int[][]{{1}, {3, 4}, {}, {7}, {}});
     }
 
     @Test
@@ -46,6 +46,15 @@ public class JaggedArrayIteratorTest {
         assertThat(it.hasNext(), is(true));
         assertThat(it.next(), is(4));
         assertThat(it.hasNext(), is(true));
+        assertThat(it.next(), is(7));
+        assertThat(it.hasNext(), is(false));
+    }
+
+    @Test
+    public void hasEmptyLineArray() {
+        assertThat(it.next(), is(1));
+        assertThat(it.next(), is(3));
+        assertThat(it.next(), is(4));
         assertThat(it.next(), is(7));
         assertThat(it.hasNext(), is(false));
     }

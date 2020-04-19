@@ -43,14 +43,19 @@ public class MatrixIterator implements Iterator<Integer> {
      */
     @Override
     public boolean hasNext() {
+        boolean res = true;
         nextI = i;
         nextJ = j;
         nextI++;
-        if (nextI == array[nextJ].length) {
+        while (nextI >= array[nextJ].length) {
             nextI = 0;
             nextJ++;
+            if (nextJ >= array.length) {
+                res = false;
+                break;
+            }
         }
-        return nextJ < array.length;
+        return res;
     }
 
     /**
