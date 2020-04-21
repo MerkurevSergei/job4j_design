@@ -1,6 +1,7 @@
 package ru.job4j.map;
 
 import java.util.Calendar;
+import java.util.Objects;
 
 /**
  * User model.
@@ -31,5 +32,22 @@ public class User {
         this.name = name;
         this.children = children;
         this.birthday = birthday;
+    }
+
+    /**
+     * @param o - any object
+     * @return true if equals
+     */
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    /**
+     * @return hash code
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, children, birthday);
     }
 }
