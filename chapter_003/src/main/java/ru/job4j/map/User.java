@@ -24,7 +24,7 @@ public class User {
     private final Calendar birthday;
 
     /**
-     * @param name - to be init user name
+     * @param name     - to be init user name
      * @param children - to be init user children
      * @param birthday - to be init user birthday
      */
@@ -57,6 +57,6 @@ public class User {
      */
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return Objects.hash(name, children, birthday);
     }
 }
