@@ -14,24 +14,35 @@ public class EchoServer {
      */
     public static void main(String[] args) throws IOException {
         try (ServerSocket server = new ServerSocket(9000)) {
-            String msg = "";
-            while (!msg.equals("GET /?msg=Bye HTTP/1.1")) {
-                msg = "";
+            String answer = "";
+            while (!answer.toLowerCase().equals("exit")) {
                 Socket socket = server.accept();
                 try (OutputStream out = socket.getOutputStream();
                      BufferedReader in = new BufferedReader(
                              new InputStreamReader(socket.getInputStream()))) {
                     String str = in.readLine();
-                    while (!str.isEmpty()) {
-                        if (msg.isEmpty()) {
-                            msg = str;
-                        }
-                        System.out.println(str);
-                        str = in.readLine();
-                    }
-                    out.write("HTTP/1.1 200 OK".getBytes());
+                    answer = answer(str);
+                    out.write("HTTP/1.1 200 OK\r\n\r\n".getBytes());
+                    out.write(answer.getBytes());
                 }
             }
         }
+    }
+
+    /**
+     * @param query - query
+     * @return parsing result
+     */
+    public static String answer(String query) {
+        String res = "";
+        String[] s = query.split(" ");
+        if (s.length < 1) {
+            return res;
+        }
+        s = s[1].split("=");
+        if (s.length > 1) {
+            res = s[1];
+        }
+        return res;
     }
 }
