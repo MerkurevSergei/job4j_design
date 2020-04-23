@@ -1,5 +1,8 @@
 package ru.job4j.generic;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 
 /**
@@ -44,8 +47,7 @@ public abstract class AbstractStore<T extends Base> implements Store<T> {
     public boolean replace(String id, T model) {
         boolean res = false;
         if (model != null) {
-            T oldModel = findById(id);
-            final int i = store.indexOf(oldModel);
+            final int i = store.search((o) -> o.getId().equals(id));
             if (i != -1) {
                 store.set(i, model);
                 res = true;
@@ -61,8 +63,7 @@ public abstract class AbstractStore<T extends Base> implements Store<T> {
     @Override
     public boolean delete(String id) {
         boolean res = false;
-        T model = findById(id);
-        final int i = store.indexOf(model);
+        final int i = store.search((o) -> o.getId().equals(id));
         if (i != -1) {
             store.remove(i);
             res = true;

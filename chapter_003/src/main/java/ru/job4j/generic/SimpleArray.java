@@ -1,6 +1,7 @@
 package ru.job4j.generic;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * Simple wrapper over generic array.
@@ -104,6 +105,22 @@ public class SimpleArray<E> {
                     res = i;
                     break;
                 }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * @param predicate - predicate
+     * @return search result
+     */
+    @SuppressWarnings("unchecked")
+    public int search(Predicate<E> predicate) {
+        int res = -1;
+        for (int i = 0; i < size(); i++) {
+            if (predicate.test((E) array[i])) {
+                res = i;
+                break;
             }
         }
         return res;
