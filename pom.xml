@@ -98,7 +98,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>ru.job4j.io.Zip</mainClass>
+                            <mainClass>ru.job4j.io.searcher.App</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
