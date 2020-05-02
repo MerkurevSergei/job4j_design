@@ -5,8 +5,18 @@ package ru.job4j.io.chat;
  */
 public interface Bot {
     /**
-     * @param question - question from bot
      * @return - answer
      */
-    String answer(String question);
+    String answer();
+
+    /**
+     * Update the bot behavior
+     * @param question - question
+     */
+    void update(String question);
+
+    /**
+     * @return ready status
+     */
+    boolean ready();
 }

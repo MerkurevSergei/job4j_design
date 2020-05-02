@@ -21,12 +21,14 @@ public class BotImplTest {
         final File baseFile = folder.newFile("base.txt");
         Files.writeString(baseFile.toPath(), "hello");
         final BotImpl bot = new BotImpl(baseFile.toPath());
-        assertNotEquals(bot.answer("any question"), msgBaseNotLoaded);
+        bot.update("any question");
+        assertNotEquals(bot.answer(), msgBaseNotLoaded);
     }
 
     @Test
     public void whenAnswerBaseNotLoaded() {
         final BotImpl bot = new BotImpl(null);
-        assertEquals(bot.answer("any answer"), msgBaseNotLoaded);
+        bot.update("any answer");
+        assertEquals(bot.answer(), msgBaseNotLoaded);
     }
 }

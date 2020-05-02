@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.function.Supplier;
 
@@ -16,11 +17,14 @@ public class BotImpl implements Bot {
     /**
      * bot answers
      */
-    final List<String> answers;
+    private final List<String> answers;
 
-    AnswerStrategy[] strategies;
+    private final AnswerStrategy[] strategies;
 
-    AnswerStrategy currentStrategy;
+    private AnswerStrategy currentStrategy;
+
+    private String currentQuestion;
+
     /**
      * @param pathBase - path to knowledge base from bot answers
      */
@@ -36,18 +40,34 @@ public class BotImpl implements Bot {
     }
 
     /**
-     * @param question - question from bot
      * @return answer
      */
     @Override
-    public String answer(String question) {
+    public String answer() {
+        return currentStrategy.answer();
+    }
+
+    /**
+     * Update the bot behavior
+     * @param question - question
+     */
+    @Override
+    public void update(String question) {
         for (AnswerStrategy s : strategies) {
             if (s.check(question)) {
                 currentStrategy = s;
+                currentQuestion = question;
                 break;
             }
         }
-        return currentStrategy.answer(question);
+    }
+
+    /**
+     * @return ready status
+     */
+    @Override
+    public boolean ready() {
+        return !Objects.isNull(currentStrategy.answer());
     }
 
     /**
@@ -62,10 +82,10 @@ public class BotImpl implements Bot {
      */
     private interface AnswerStrategy {
         boolean check(String question);
-        String answer(String question);
+        String answer();
     }
 
-    private class SilenceAnswer implements AnswerStrategy {
+    private static class SilenceAnswer implements AnswerStrategy {
 
         @Override
         public boolean check(String question) {
@@ -73,7 +93,7 @@ public class BotImpl implements Bot {
         }
 
         @Override
-        public String answer(String question) {
+        public String answer() {
             return null;
         }
     }
@@ -86,7 +106,7 @@ public class BotImpl implements Bot {
         }
 
         @Override
-        public String answer(String question) {
+        public String answer() {
             String answer = "Knowledge base don't loaded";
             if (baseLoad()) {
                 final int i = new Random().nextInt(answers.size());

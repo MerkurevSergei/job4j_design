@@ -43,8 +43,9 @@ public class Chat {
         logger.write(helloMsg);
         String message = getUserMessage();
         while (checkStop(message)) {
-            String answer = bot.answer(message);
-            if (answer != null) {
+            bot.update(message);
+            if (bot.ready()) {
+                String answer = bot.answer();
                 println(answer);
                 logger.write(message);
                 logger.write(answer);
