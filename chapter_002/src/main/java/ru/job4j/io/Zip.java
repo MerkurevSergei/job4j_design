@@ -19,16 +19,14 @@ public class Zip {
      * @param sources - files for zipped
      * @param target  - target archive
      */
-    public void packFiles(List<File> sources, File target) throws AccessDeniedException, NoSuchFileException, FileNotFoundException {
+    public void packFiles(List<File> sources, File target) throws Exception {
         try (ZipOutputStream zip = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(target)))) {
             for (File source : sources) {
-                zip.putNextEntry(new ZipEntry(source.toPath().normalize().toString()));
-                Files.copy(source.toPath(), zip);
+                zip.putNextEntry(new ZipEntry(source.getPath()));
+                try (BufferedInputStream out = new BufferedInputStream(new FileInputStream(source))) {
+                    zip.write(out.readAllBytes());
+                }
             }
-        } catch (AccessDeniedException | NoSuchFileException | FileNotFoundException e) {
-            throw e;
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -36,13 +34,13 @@ public class Zip {
      * @param source - file for zipped
      * @param target - target archive
      */
-    public void packSingleFile(File source, File target) throws NoSuchFileException, FileNotFoundException, AccessDeniedException {
+    public void packSingleFile(File source, File target) throws Exception {
         final List<File> files = new ArrayList<>();
         files.add(source);
         packFiles(files, target);
     }
 
-    public void packFromArgZip(ArgZip argZip) throws IllegalArgumentException, NoSuchFileException, FileNotFoundException, AccessDeniedException {
+    public void packFromArgZip(ArgZip argZip) throws Exception {
         if (!argZip.valid()) {
             throw new IllegalArgumentException("Illegal ArgZip");
         }

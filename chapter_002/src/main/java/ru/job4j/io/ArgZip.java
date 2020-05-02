@@ -3,6 +3,8 @@ package ru.job4j.io;
 import java.io.File;
 import java.nio.file.*;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Contains and work from command line arguments from zipped
@@ -10,16 +12,41 @@ import java.util.Arrays;
 public class ArgZip {
 
     /**
-     * command line arguments
+     * command line arguments storage
      */
-    private final String[] args;
+    final Map<String, String> args;
 
     /**
      * @param args - init command line arguments
      */
     public ArgZip(String[] args) {
-        this.args = args;
+        this.args = new HashMap<>();
+        this.args.put("d", parseDirectory(args));
+        this.args.put("e", parseExclude(args));
+        this.args.put("o", parseOutput(args));
     }
+
+    /**
+     * @return the archived directory
+     */
+    public String directory() {
+        return args.get("d");
+    }
+
+    /**
+     * @return pattern from excluded files
+     */
+    public String exclude() {
+        return args.get("e");
+    }
+
+    /**
+     * @return result file name
+     */
+    public String output() {
+        return args.get("o");
+    }
+
 
     /**
      * @return true if arguments valid
@@ -33,11 +60,11 @@ public class ArgZip {
     }
 
     /**
-     * @return the archived directory
+     * @return parse the archived directory
      */
-    public String directory() {
+    private String parseDirectory(String[] args) {
         final int i = Arrays.binarySearch(args, "-d");
-        String res = extractValue(i + 1);
+        String res = extractValue(i + 1, args);
         if (!res.isEmpty()) {
             Path path = Paths.get(res);
             res = Files.exists(path) && path.toFile().isDirectory() ? path.toAbsolutePath().toString() : "";
@@ -46,11 +73,11 @@ public class ArgZip {
     }
 
     /**
-     * @return pattern from excluded files
+     * @return parse pattern from excluded files
      */
-    public String exclude() {
+    private String parseExclude(String[] args) {
         final int i = Arrays.binarySearch(args, "-e");
-        String res = extractValue(i + 1);
+        String res = extractValue(i + 1, args);
         if (!res.matches("^\\*\\.\\w+")) {
             res = "";
         }
@@ -58,11 +85,11 @@ public class ArgZip {
     }
 
     /**
-     * @return result file name
+     * @return parse result file name
      */
-    public String output() {
+    private String parseOutput(String[] args) {
         final int i = Arrays.binarySearch(args, "-o");
-        String res = extractValue(i + 1);
+        String res = extractValue(i + 1, args);
         if (!res.isEmpty() && !Paths.get(res).getParent().toFile().exists()) {
             res = "";
         }
@@ -78,7 +105,7 @@ public class ArgZip {
      * @param i - key from array for extract directories
      * @return - parameter value
      */
-    private String extractValue(int i) {
+    private String extractValue(int i, String[] args) {
         String res = "";
         try {
             res = args[i];

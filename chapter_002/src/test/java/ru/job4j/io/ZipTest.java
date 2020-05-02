@@ -20,7 +20,7 @@ public class ZipTest {
     public TemporaryFolder folder = new TemporaryFolder();
 
     @Test
-    public void whenSuccessPackFiles() throws IOException {
+    public void whenSuccessPackFiles() throws Exception {
         final ArrayList<File> files = new ArrayList<>();
         files.add(folder.newFile("temp.txt"));
         files.add(folder.newFile("temp1.txt"));
@@ -41,8 +41,8 @@ public class ZipTest {
         assertThat("temp.txt;temp1.txt", is(s.toString()));
     }
 
-    @Test(expected = NoSuchFileException.class)
-    public void whenPackFilesNoSuchFileException() throws IOException {
+    @Test(expected = FileNotFoundException.class)
+    public void whenPackFilesNoSuchFileException() throws Exception {
         final ArrayList<File> files = new ArrayList<>();
         files.add(Paths.get(folder.toString() + "notFile.txt").toFile());
         final Zip zip = new Zip();
@@ -51,12 +51,11 @@ public class ZipTest {
                 files,
                 fileZip
         );
-
-        assertThat("temp.txt;temp1.txt", is(""));
+        fail();
     }
 
     @Test(expected = FileNotFoundException.class)
-    public void whenPackFilesFileNotFoundException() throws IOException {
+    public void whenPackFilesFileNotFoundException() throws Exception {
         final ArrayList<File> files = new ArrayList<>();
         final Zip zip = new Zip();
         final File fileZip = Paths.get(folder.toString() + File.separator
@@ -65,12 +64,11 @@ public class ZipTest {
                 files,
                 fileZip
         );
-
-        assertThat("temp.txt;temp1.txt", is(""));
+        fail();
     }
 
     @Test
-    public void whenSuccessPackSingleFile() throws IOException {
+    public void whenSuccessPackSingleFile() throws Exception {
         final Zip zip = new Zip();
         final File fileZip = folder.newFile("temp.zip");
         zip.packSingleFile(
@@ -89,7 +87,7 @@ public class ZipTest {
     }
 
     @Test
-    public void whenSuccessPackFromArgZip() throws IOException {
+    public void whenSuccessPackFromArgZip() throws Exception {
         File tempFolder = folder.newFolder("temp");
         folder.newFile("temp" + File.separator + "temp.txt");
         folder.newFile("temp" + File.separator + "temp1.txt1");
