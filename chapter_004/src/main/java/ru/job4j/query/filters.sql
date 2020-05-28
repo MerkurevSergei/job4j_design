@@ -1,7 +1,8 @@
 -- Написать запрос получение всех продуктов с типом "СЫР".
-SELECT p.name, p.expired_date, p.price, t.name FROM product AS p
-LEFT OUTER JOIN type AS t ON (p.type_id = t.id)
-WHERE LOWER(t.name) = LOWER('СЫР');
+SELECT p.name, p.expired_date, p.price, OnlyCheese.name FROM product AS p
+RIGHT OUTER JOIN
+    (SELECT t.name, t.id FROM type AS t where LOWER(t.name) = LOWER('СЫР')) AS OnlyCheese
+    ON (p.type_id = OnlyCheese.id);
 
 -- Написать запрос получения всех продуктов, у кого в имени есть слово "мороженное".
 SELECT p.name, p.expired_date, p.price FROM product AS p
@@ -28,30 +29,25 @@ SELECT p.name, p.expired_date, p.price FROM product AS p
 INNER JOIN (SELECT MAX(price) as price FROM product) AS p1 ON (p.price = p1.price);
 
 
-
 -- Написать запрос, который выводит количество всех продуктов определенного типа.
--- В таблицах нет явных сведений о количестве, но если считать, что 1 строка - 1 ед. товара
-SELECT p.name, avg(p.price), count(1) FROM product AS p
-GROUP BY p.name;
-
-
--- Написать запрос, который выводит количество всех продуктов определенного типа.
--- В таблицах нет явных сведений о количестве, но если считать, что 1 строка - 1 ед. товара
 SELECT t.name, count(1) FROM type AS t
 LEFT OUTER JOIN product AS p ON t.id = p.type_id
 GROUP BY t.name;
 
+
 -- Написать запрос получение всех продуктов с типом "СЫР" и "МОЛОКО".
-SELECT p.name, p.expired_date, p.price, t.name FROM product AS p
-LEFT OUTER JOIN type AS t ON (p.type_id = t.id)
-WHERE LOWER(t.name) IN (LOWER('СЫР'), LOWER('МОЛОКО'));
+SELECT p.name, p.expired_date, p.price, strictType.name FROM product AS p
+RIGHT OUTER JOIN
+    (SELECT t.name, t.id FROM type AS t where LOWER(t.name) IN (LOWER('СЫР'),LOWER('МОЛОКО'))) AS strictType
+    ON (p.type_id = strictType.id);
 
 
--- Написать запрос, который выводит тип продуктов, которых осталось меньше 10 штук.  
--- В таблицах нет явных сведений о количестве, но если считать, что 1 строка - 1 ед. товара
-SELECT p.name, avg(p.price), count(1) FROM product AS p
-GROUP BY p.name
+-- Написать запрос, который выводит тип продуктов, которых осталось меньше 10 штук.
+SELECT t.name, count(1) FROM type AS t
+LEFT OUTER JOIN product AS p ON t.id = p.type_id
+GROUP BY t.name
 HAVING(count(1)) < 10;
+
 
 -- Вывести все продукты и их тип.
 SELECT p.name, p.expired_date, p.price, t.name FROM product AS p
