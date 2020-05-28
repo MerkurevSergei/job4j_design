@@ -10,8 +10,8 @@ WHERE p.name ILIKE '%Мороженное%';
 
 -- Написать запрос, который выводит все продукты, срок годности которых заканчивается в следующем месяце.
 SELECT p.name, p.expired_date, p.price FROM product AS p
-WHERE EXTRACT(YEAR FROM now()) = EXTRACT(YEAR FROM p.expired_date)
-AND EXTRACT(MONTH FROM now() + interval '1 month') = EXTRACT(MONTH FROM p.expired_date);
+WHERE date_trunc('year', CURRENT_TIMESTAMP) = date_trunc('year', p.expired_date)
+AND date_trunc('month', CURRENT_TIMESTAMP + interval '1 month') = date_trunc('month', p.expired_date);
 
 
 -- Написать запрос, который выводит самый дорогой продукт.
