@@ -1,8 +1,7 @@
 -- Написать запрос получение всех продуктов с типом "СЫР".
-SELECT p.name, p.expired_date, p.price, OnlyCheese.name FROM product AS p
-RIGHT OUTER JOIN
-    (SELECT t.name, t.id FROM type AS t where LOWER(t.name) = LOWER('СЫР')) AS OnlyCheese
-    ON (p.type_id = OnlyCheese.id);
+SELECT p.name, p.expired_date, p.price, t.name FROM product AS p
+INNER JOIN type as t ON (p.type_id = t.id)
+WHERE LOWER(t.name) = LOWER('СЫР');
 
 -- Написать запрос получения всех продуктов, у кого в имени есть слово "мороженное".
 SELECT p.name, p.expired_date, p.price FROM product AS p
@@ -36,10 +35,10 @@ GROUP BY t.name;
 
 
 -- Написать запрос получение всех продуктов с типом "СЫР" и "МОЛОКО".
-SELECT p.name, p.expired_date, p.price, strictType.name FROM product AS p
-RIGHT OUTER JOIN
-    (SELECT t.name, t.id FROM type AS t where LOWER(t.name) IN (LOWER('СЫР'),LOWER('МОЛОКО'))) AS strictType
-    ON (p.type_id = strictType.id);
+SELECT p.name, p.expired_date, p.price, t.name FROM product AS p
+INNER JOIN type as t ON (p.type_id = t.id)
+WHERE LOWER(t.name) = LOWER('СЫР') OR LOWER(t.name) = LOWER('МОЛОКО');
+
 
 
 -- Написать запрос, который выводит тип продуктов, которых осталось меньше 10 штук.
