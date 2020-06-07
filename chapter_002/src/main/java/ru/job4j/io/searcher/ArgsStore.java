@@ -1,8 +1,10 @@
 package ru.job4j.io.searcher;
 
 import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Contains and work with command line arguments from searcher
@@ -21,7 +23,7 @@ public final class ArgsStore {
     /**
      * searching method
      */
-    private final Method method;
+    private final Predicate<Path> method;
 
     /**
      * output file
@@ -35,11 +37,40 @@ public final class ArgsStore {
         List<String> listArgs = Arrays.asList(args);
         directory = parseDirectory(listArgs);
         pattern = parsePattern(listArgs);
-        method = parseMethod(listArgs);
         output = parseOutput(listArgs);
+        Method methodName = parseMethodName(listArgs);
         checkDirectory();
         checkPattern();
-        checkMethod();
+        checkMethodName(methodName);
+        method = createMethod(methodName);
+    }
+
+    /**
+     * @param methodName name of searcher method.
+     * @return searcher method.
+     */
+    private Predicate<Path> createMethod(Method methodName) {
+        Predicate<Path> predicate;
+        switch (methodName) {
+            case MASK:
+                predicate = (path) -> {
+                    final PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:" + pattern);
+                    return pathMatcher.matches(path);
+                };
+                break;
+            case NAME:
+                predicate = (path) -> pattern.equals(path.getFileName().toString());
+                break;
+            case REGEXP:
+                predicate = (path) -> {
+                    final PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("regex:" + pattern);
+                    return pathMatcher.matches(path);
+                };
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + methodName);
+        }
+        return predicate;
     }
 
     /**
@@ -65,8 +96,7 @@ public final class ArgsStore {
     /**
      * @return search method
      */
-    public final Method getMethod() {
-        checkMethod();
+    public final Predicate<Path> getMethod() {
         return method;
     }
 
@@ -114,7 +144,7 @@ public final class ArgsStore {
      * @param args - command line arguments
      * @return search method
      */
-    private Method parseMethod(List<String> args) {
+    private Method parseMethodName(List<String> args) {
         Method res = null;
         if (args.contains("-m")) {
             res = Method.MASK;
@@ -163,8 +193,8 @@ public final class ArgsStore {
     /**
      * Check method.
      */
-    private void checkMethod() {
-        if (method == null) {
+    private void checkMethodName(Method methodName) {
+        if (methodName == null) {
             throw new IllegalStateException("Search method invalid");
         }
     }

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  * Search files from mask, name or regular expression.
@@ -20,24 +21,17 @@ public final class Searcher {
     private final Path rootDirectory;
 
     /**
-     * Pattern compare for file
-     */
-    private final String pattern;
-
-    /**
      * Chosen visitor
      */
     private final PatternVisitor visitor;
 
     /**
      * @param rootDirectory - the directory start searching
-     * @param pattern - pattern compare for file
-     * @param method - method from choose visitor
+     * @param method - method from searching
      */
-    public Searcher(Path rootDirectory, String pattern, Method method) {
+    public Searcher(Path rootDirectory, Predicate<Path> method) {
         this.rootDirectory = rootDirectory;
-        this.pattern = pattern;
-        this.visitor = initVisitor(method);
+        this.visitor = new PatternVisitor(method);
     }
 
     /**
@@ -54,56 +48,23 @@ public final class Searcher {
     }
 
     /**
-     * @param method - search method
-     * @return - visitor from method
-     */
-    private PatternVisitor initVisitor(Method method) {
-        Map<Method, PatternVisitor> visitors = new HashMap<>();
-
-        // Visitor find from mask
-        visitors.put(Method.MASK, new PatternVisitor() {
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-                final PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:" + pattern);
-                if (pathMatcher.matches(file.getFileName())) {
-                    result.add(file);
-                }
-                return FileVisitResult.CONTINUE;
-            }
-        });
-
-        // Visitor find from name
-        visitors.put(Method.NAME, new PatternVisitor() {
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-                if (pattern.equals(file.getFileName().toString())) {
-                    result.add(file);
-                }
-                return FileVisitResult.CONTINUE;
-            }
-        });
-
-        // Visitor find from regular expression
-        visitors.put(Method.REGEXP, new PatternVisitor() {
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-                final PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("regex:" + pattern);
-                if (pathMatcher.matches(file)) {
-                    result.add(file);
-                }
-                return FileVisitResult.CONTINUE;
-            }
-        });
-
-        return visitors.get(method);
-    }
-
-    /**
      * Pattern visitor extends SimpleFileVisitor, add result list
      * and override visitFileFailed
      */
     private static class PatternVisitor extends SimpleFileVisitor<Path> {
         protected List<Path> result = new ArrayList<>();
+        Predicate<Path> method;
+        public PatternVisitor(Predicate<Path> method) {
+            this.method = method;
+        }
+
+        @Override
+        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+            if (method.test(file.getFileName())) {
+                result.add(file);
+            }
+            return FileVisitResult.CONTINUE;
+        }
 
         @Override
         public FileVisitResult visitFileFailed(Path file, IOException exc) {

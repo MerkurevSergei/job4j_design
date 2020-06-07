@@ -22,7 +22,7 @@ public class ArgsStoreTest {
         ArgsStore argsStore = new ArgsStore(args);
         assertThat(argsStore.getRootDirectory().toString(), is(folder.getRoot().getAbsolutePath()));
         assertThat(argsStore.getPattern(), is("*.txt"));
-        assertThat(argsStore.getMethod(), is(Method.MASK));
+        assertNotNull(argsStore.getMethod());
         assertThat(argsStore.getOutput().toString(), is("log.txt"));
     }
 

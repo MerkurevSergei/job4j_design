@@ -36,7 +36,7 @@ public class SearcherTest {
                 "-o", "log.txt"
         };
         ArgsStore argsStore = new ArgsStore(args);
-        Searcher searcher = new Searcher(argsStore.getRootDirectory(), argsStore.getPattern(), argsStore.getMethod());
+        Searcher searcher = new Searcher(argsStore.getRootDirectory(), argsStore.getMethod());
         List<Path> files = searcher.execute();
         assertThat(files, is(List.of(file0.toPath(), file2.toPath())));
     }
@@ -50,7 +50,7 @@ public class SearcherTest {
                 "-o", "log.txt"
         };
         ArgsStore argsStore = new ArgsStore(args);
-        Searcher searcher = new Searcher(argsStore.getRootDirectory(), argsStore.getPattern(), argsStore.getMethod());
+        Searcher searcher = new Searcher(argsStore.getRootDirectory(), argsStore.getMethod());
         List<Path> files = searcher.execute();
         assertThat(files, is(List.of(file0.toPath())));
     }
@@ -64,7 +64,7 @@ public class SearcherTest {
                 "-o", "log.txt"
         };
         ArgsStore argsStore = new ArgsStore(args);
-        Searcher searcher = new Searcher(argsStore.getRootDirectory(), argsStore.getPattern(), argsStore.getMethod());
+        Searcher searcher = new Searcher(argsStore.getRootDirectory(), argsStore.getMethod());
         List<Path> files = searcher.execute();
         assertThat(files, is(List.of(file0.toPath(), file2.toPath())));
     }

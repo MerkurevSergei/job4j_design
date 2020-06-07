@@ -13,7 +13,7 @@ public final class App {
      */
     public static void main(String[] args) throws IOException {
         ArgsStore as = new ArgsStore(args);
-        Searcher searcher = new Searcher(as.getRootDirectory(), as.getPattern(), as.getMethod());
+        Searcher searcher = new Searcher(as.getRootDirectory(), as.getMethod());
         List<Path> files = searcher.execute();
 
         try (PrintWriter out = (as.getOutput() == null ? new PrintWriter(System.out)
