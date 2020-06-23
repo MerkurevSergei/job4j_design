@@ -4,6 +4,7 @@ import ru.job4j.design.lsp.foodstorage.food.Food;
 import ru.job4j.design.lsp.foodstorage.storage.Storage;
 
 import java.util.Calendar;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -14,7 +15,7 @@ public class ControlQuality {
     /**
      * Food abstract storages.
      */
-    private List<Storage> storages;
+    private final List<Storage> storages;
 
     /**
      * Date of expiration check.
@@ -27,6 +28,14 @@ public class ControlQuality {
      */
     public ControlQuality(List<Storage> storages, Calendar currentDate) {
         this.storages = storages;
+        this.currentDate = currentDate;
+    }
+
+    /**
+     * Set current date
+     * @param currentDate init
+     */
+    public void setCurrentDate(Calendar currentDate) {
         this.currentDate = currentDate;
     }
 
@@ -44,7 +53,17 @@ public class ControlQuality {
                 }
             }
         }
-        foods.clear();
     }
 
+    /**
+     * Resort foods from storages
+     */
+    public void resort() {
+        List<Food> tFood = new LinkedList<>();
+        for (Storage storage: storages) {
+            tFood.addAll(storage.getAll());
+            storage.clear();
+        }
+        distribute(tFood);
+    }
 }

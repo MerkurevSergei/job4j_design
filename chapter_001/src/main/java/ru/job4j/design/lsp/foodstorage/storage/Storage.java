@@ -3,6 +3,7 @@ package ru.job4j.design.lsp.foodstorage.storage;
 import ru.job4j.design.lsp.foodstorage.food.Food;
 
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Storage interface
@@ -19,4 +20,15 @@ public interface Storage {
      * @param food - added food
      */
     void add(Food food);
+
+    /**
+     * @return foods from storage
+     */
+    List<Food> getAll();
+
+    /**
+     * Clear storage
+     */
+    void clear();
+
 }

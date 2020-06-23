@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 abstract public class AbstractStorage implements Storage {
-    private List<Food> foodStorage = new ArrayList<>();
+    private final List<Food> foodStorage = new ArrayList<>();
 
     public double expireReminder(Food food, Calendar currentDate) {
         double shelfLife = food.getExpireDate().getTimeInMillis() - food.getCreateDate().getTimeInMillis();
@@ -19,6 +19,16 @@ abstract public class AbstractStorage implements Storage {
     @Override
     public void add(Food food) {
         foodStorage.add(food);
+    }
+
+    @Override
+    public List<Food> getAll() {
+        return foodStorage;
+    }
+
+    @Override
+    public void clear() {
+        foodStorage.clear();
     }
 
     @Override
