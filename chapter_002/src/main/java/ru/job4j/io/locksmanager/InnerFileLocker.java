@@ -1,11 +1,9 @@
 package ru.job4j.io.locksmanager;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
+import java.util.Optional;
 
 /**
  * The PathsLocker manages paths access, singleton.
@@ -38,12 +36,13 @@ public enum InnerFileLocker {
     /**
      * Lock path is possible or throw exception.
      *
-     * @param path     init.
+     * @param path   init.
      * @param shared {@code true} if shared
      * @return InnerFileLock if path locked or null.
      */
     public synchronized InnerFileLock tryLock(Path path, boolean shared) {
-        InnerFileLock lock = counter.getOrDefault(path.toAbsolutePath(), null);
+        path = Optional.of(path).get().toAbsolutePath();
+        InnerFileLock lock = counter.getOrDefault(path, null);
         if (lock != null && (!lock.isShared() || !shared)) {
             return null;
         }
@@ -56,14 +55,12 @@ public enum InnerFileLocker {
      * @param lock released
      */
     synchronized void releaseLock(InnerFileLock lock) {
-        if (lock == null) {
-            throw new NullPointerException("Lock is null!");
-        }
-        if (lock.count() == 0 || !counter.containsKey(lock.getPath())) {
-            throw new IllegalArgumentException("InnerFileLocker not consist lock on file: " + lock.getPath());
+        lock = Optional.of(lock).get();
+        if (lock.count() == 0 || !counter.containsKey(lock.path())) {
+            throw new IllegalArgumentException("InnerFileLocker not consist lock on file: " + lock.path());
         }
         if (lock.count() == 1) {
-            counter.remove(lock.getPath());
+            counter.remove(lock.path());
         }
         lock.decrease();
     }

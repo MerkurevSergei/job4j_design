@@ -1,7 +1,7 @@
 package ru.job4j.io.locksmanager;
 
 import java.nio.file.Path;
-import java.util.Objects;
+import java.util.Optional;
 
 /**
  * The PathLock instance.
@@ -26,7 +26,7 @@ public final class InnerFileLock implements AutoCloseable {
      * @param shared {@code true} if is shared
      */
     InnerFileLock(Path path, boolean shared) {
-        this.path = path.toAbsolutePath();
+        this.path = Optional.of(path).get().toAbsolutePath();
         this.shared = shared;
         this.count = 1;
     }
@@ -34,7 +34,7 @@ public final class InnerFileLock implements AutoCloseable {
     /**
      * @return locked path to file
      */
-    synchronized Path getPath() {
+    public synchronized Path path() {
         return path;
     }
 
@@ -57,6 +57,7 @@ public final class InnerFileLock implements AutoCloseable {
 
     /**
      * Increase count locks on file.
+     *
      * @return this
      */
     synchronized InnerFileLock increase() {

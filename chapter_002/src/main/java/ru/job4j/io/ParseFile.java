@@ -1,14 +1,11 @@
 package ru.job4j.io;
 
-import ru.job4j.io.locksmanager.InnerFileLock;
-import ru.job4j.io.locksmanager.InnerFileLocker;
+import ru.job4j.io.concurrent.ConcurrentFile;
 
-import java.io.*;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileLock;
-import java.nio.channels.OverlappingFileLockException;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+import java.util.Optional;
 
 /**
  * The ParseFile - read content, read only ASCII content and write content to file.
@@ -19,23 +16,14 @@ import java.nio.file.Path;
  */
 public class ParseFile {
 
-    /**
-     * The path to file.
-     */
-    private final Path path;
-
-    /**
-     * The file charset.
-     */
-    private final Charset charset;
+    private final ConcurrentFile cFile;
 
     /**
      * @param path    init.
      * @param charset init.
      */
     public ParseFile(Path path, Charset charset) {
-        this.path = path;
-        this.charset = charset;
+        this.cFile = new ConcurrentFile(path, charset);
     }
 
     /**
@@ -43,17 +31,7 @@ public class ParseFile {
      * @throws IOException If an I/O error occurs.
      */
     public String getContent() throws IOException {
-        String output;
-        try (final FileInputStream in = new FileInputStream(path.toFile());
-             final FileChannel channel = in.getChannel();
-             final FileLock extLook = channel.tryLock(0, Long.MAX_VALUE, true);
-             final InnerFileLock inLock = InnerFileLocker.MANAGER.tryLock(path, true)) {
-            checkExternalOverlap(extLook);
-            checkInnerOverlap(inLock);
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            output = new String(in.readAllBytes(), charset);
-        }
-        return output;
+        return cFile.readString();
     }
 
     /**
@@ -61,15 +39,7 @@ public class ParseFile {
      * @throws IOException If an I/O error occurs.
      */
     public String getContentASCII() throws IOException {
-        String output;
-        try (final FileInputStream in = new FileInputStream(path.toFile());
-             final FileChannel channel = in.getChannel();
-             final FileLock extLook = channel.tryLock(0, Long.MAX_VALUE, true);
-             final InnerFileLock inLock = InnerFileLocker.MANAGER.tryLock(path, true)) {
-            checkExternalOverlap(extLook);
-            checkInnerOverlap(inLock);
-            output = new String(in.readAllBytes(), charset);
-        }
+        String output = cFile.readString();
         return output.replaceAll("[^\\x00-\\x7E]", "");
     }
 
@@ -83,15 +53,7 @@ public class ParseFile {
      */
     public String getContent128() throws IOException {
         final StringBuilder sb = new StringBuilder();
-        byte[] bytes;
-        try (final FileInputStream in = new FileInputStream(path.toFile());
-             final FileChannel channel = in.getChannel();
-             final FileLock extLook = channel.tryLock(0, Long.MAX_VALUE, true);
-             final InnerFileLock inLock = InnerFileLocker.MANAGER.tryLock(path, true)) {
-            checkExternalOverlap(extLook);
-            checkInnerOverlap(inLock);
-            bytes = in.readAllBytes();
-        }
+        byte[] bytes = cFile.readAllBytes();
         for (byte b : bytes) {
             sb.append((char) b);
         }
@@ -103,7 +65,7 @@ public class ParseFile {
      * @throws IOException If an I/O error occurs.
      */
     public void saveContent(String content) throws IOException {
-        saveContent(content, charset);
+        cFile.write(content);
     }
 
     /**
@@ -112,25 +74,7 @@ public class ParseFile {
      * @throws IOException If an I/O error occurs.
      */
     public void saveContent(String content, Charset charset) throws IOException {
-        try (final FileOutputStream out = new FileOutputStream(path.toFile());
-             final FileChannel channel = out.getChannel();
-             final FileLock extLock = channel.tryLock(0, Long.MAX_VALUE, false);
-             final InnerFileLock inLock = InnerFileLocker.MANAGER.tryLock(path, false)) {
-            checkExternalOverlap(extLock);
-            checkInnerOverlap(inLock);
-            out.write(content.getBytes(charset));
-        }
-    }
-
-    private void checkExternalOverlap(FileLock extLook) {
-        if (extLook == null) {
-            throw new OverlappingFileLockException();
-        }
-    }
-
-    private void checkInnerOverlap(InnerFileLock inLock) throws IOException {
-        if (inLock == null) {
-            throw new IOException("The file is already exclusive open: " + path.toAbsolutePath());
-        }
+        charset = Optional.of(charset).get();
+        cFile.write(content, charset);
     }
 }

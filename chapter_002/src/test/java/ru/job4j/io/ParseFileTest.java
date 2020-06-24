@@ -24,13 +24,22 @@ public class ParseFileTest {
     public void testSaveAndGetContent() throws IOException {
         final ParseFile pf = new ParseFile(path, StandardCharsets.UTF_8);
         pf.saveContent("Hello, world!");
-        assertThat(pf.getContent(), is("Hello, world!"));
+        assertThat("Hello, world!", is(pf.getContent()));
     }
 
     @Test
-    public void testGetContentASCII() throws IOException {
+    public void testSaveAnyAndGetContentASCII() throws IOException {
         final ParseFile pf = new ParseFile(path, StandardCharsets.UTF_8);
         pf.saveContent("HelloА, world!Б");
-        assertThat("Hello, world!", is(pf.getContentASCII()));
+        assertThat(pf.getContentASCII(), is("Hello, world!"));
+        pf.saveContent("HelloА, world!Б", StandardCharsets.US_ASCII);
+        assertThat(pf.getContentASCII(), is("Hello?, world!?"));
+    }
+
+    @Test
+    public void testGetContent128() throws IOException {
+        final ParseFile pf = new ParseFile(path, StandardCharsets.UTF_8);
+        pf.saveContent("Г");
+        assertThat(pf.getContent128(), is("\uFFD0ﾓ"));
     }
 }

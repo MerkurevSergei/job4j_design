@@ -9,8 +9,8 @@ import java.nio.file.Path;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.testng.Assert.assertNotEquals;
-import static org.testng.AssertJUnit.*;
+import static org.testng.AssertJUnit.assertFalse;
+import static org.testng.AssertJUnit.assertTrue;
 
 public class InnerFileLockTest {
 
@@ -24,7 +24,7 @@ public class InnerFileLockTest {
     @Test
     public void testGetPath() {
         InnerFileLock inLock = new InnerFileLock(path, false);
-        assertThat(inLock.getPath(), is(path.toAbsolutePath()));
+        assertThat(inLock.path(), is(path.toAbsolutePath()));
     }
 
     @Test
