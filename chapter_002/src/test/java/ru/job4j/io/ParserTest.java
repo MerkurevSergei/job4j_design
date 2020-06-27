@@ -3,6 +3,7 @@ package ru.job4j.io;
 import org.testng.annotations.Test;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -12,7 +13,7 @@ public class ParserTest {
     @Test
     public void testGetContentASCII() {
         final Parser p = new Parser();
-        assertThat(p.getContentASCII("HelloА, world!Б"), is("Hello, world!"));
+        assertThat(p.getContentASCII("𝔊ЙHelloА, world!Б"), is("Hello, world!"));
     }
 
     @Test

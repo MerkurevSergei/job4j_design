@@ -1,5 +1,9 @@
 package ru.job4j.io;
 
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.joining;
+
 /**
  * The ParseFile - read content, read only ASCII content and write content to file.
  *
@@ -13,7 +17,14 @@ public class Parser {
      * @return only ASCII content from file to string.
      */
     public String getContentASCII(String string) {
-        return string.replaceAll("[^\\x00-\\x7E]", "");
+        final StringBuilder sb = new StringBuilder();
+        final char[] chars = string.toCharArray();
+        for (char c: chars) {
+            if (c < 127) {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
     }
 
     /**
