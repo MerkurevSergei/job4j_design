@@ -2,6 +2,7 @@ package ru.job4j.pool;
 
 import ru.job4j.prodcons.SimpleBlockingQueue;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,14 +24,13 @@ public class ThreadPool {
         final int size = Runtime.getRuntime().availableProcessors();
         for (int i = 0; i < size; i++) {
             final Thread thread = new Thread(() -> {
-                while (!Thread.currentThread().isInterrupted()) {
-
+                while (!tasks.isEmpty() || !Thread.currentThread().isInterrupted()) {
                     try {
-                        tasks.poll().run();
+                        final Runnable poll = tasks.poll();
+                        poll.run();
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
-
                 }
             });
             thread.start();
@@ -48,11 +48,16 @@ public class ThreadPool {
     /**
      * Shutdown threads from thread pool.
      */
-    public void shutdown() throws InterruptedException {
-        while (!tasks.isEmpty()) {
-            for (Thread thread : threads) {
-                thread.interrupt();
-                thread.join();
+    public void shutdown() {
+        while (!threads.isEmpty()) {
+            final Iterator<Thread> iterator = threads.iterator();
+            while (iterator.hasNext()) {
+                final Thread thread = iterator.next();
+                if (!thread.isAlive()) {
+                    iterator.remove();
+                } else {
+                    thread.interrupt();
+                }
             }
         }
     }
