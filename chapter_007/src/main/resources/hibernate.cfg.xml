@@ -30,5 +30,8 @@
 
     <mapping class="ru.job4j.merkurevsergei.manytomany.Author" />
     <mapping class="ru.job4j.merkurevsergei.manytomany.Book" />
+
+    <mapping class="ru.job4j.merkurevsergei.lazyexception.model.AutoBrand" />
+    <mapping class="ru.job4j.merkurevsergei.lazyexception.model.AutoModel" />
   </session-factory>
 </hibernate-configuration>
